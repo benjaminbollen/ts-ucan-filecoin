@@ -22,6 +22,8 @@ users to reduce attack surface, and simplify verifying authorization:
 As a KMS for the cosigner, the user can sign `did:key:zCosigning` with PK_A,
 (results in 96 byte signature, so hash to 256 bits) as an AES encryption key for PK_B which the user must send to the cosigner service; and the cosigner service must not persist or cache.
 
+To prove to the server possession of claimed keys, the initiation starts with
+a challenge
 
 ```
 POST /api/1.0/blskeypair/requestChallenge
@@ -33,12 +35,18 @@ authorization:"Bearer ${JWT UCAN}"
 {
   keypair: {
     rootDid:
-    blsPublicKey
   },
 }
 ```
 
 returns
+```
+{
+  challenge: string,
+  didCosigner:
+}
+```
+
 ## sign a message for Filecoin
 
 in REST
