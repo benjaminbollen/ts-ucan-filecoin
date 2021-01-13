@@ -17,3 +17,12 @@ UCAN (or User Controlled Access Network) is a cryptographic web token to delegat
 Web applications can register to the service with a did, and authorize subsequent actions with an appropriate, valid UCAN according to the action policy of the service. Optionally the service can have a price policy, requiring the user to (continuously) pay for services rendered.
 
 In this model, users chose which endpoints to request services from, and authorize them accordingly, or revoke and move to another provider. Or for users who so chose, they can run these services themselves.
+
+## Setup local development
+
+Clone the repository, requires Node v10 or greater. In the directory
+```
+npm ci
+yarn run start
+```
+starts a local development server on `http://localhost:3000`.
