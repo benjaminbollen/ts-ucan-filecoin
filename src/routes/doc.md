@@ -2,7 +2,26 @@
 
 ## register a keypair for Filecoin
 
-opt for interactive verification of key ownership by issueing a challenge
+Authorization for signing messages to the Filecoin network is given by a UCAN did:key, so the service must associate a did with each signing BLS key it holds.
+
+We opt for not reusing private keys in the 2-of-2 BLS pairing across independent
+users to reduce attack surface, and simplify verifying authorization:
+
+    For each user with keys
+      did:key:zRootUser
+        |- did:key:zDeviceU
+      blsKey:PK_A
+
+    the service (did:key:zCosigning) has a BLS key
+      blsKey:PK_B
+    which requires
+      - a valid UCAN from zRootUser issued for zCosigning for resource PK_A
+      - a message M validly signed by PK_A
+    to sign M with PK_B
+
+As a KMS for the cosigner, the user can sign `did:key:zCosigning` with PK_A,
+(results in 96 byte signature, so hash to 256 bits) as an AES encryption key for PK_B which the user must send to the cosigner service; and the cosigner service must not persist or cache.
+
 
 ```
 POST /api/1.0/blskeypair/requestChallenge
