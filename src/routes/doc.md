@@ -22,20 +22,44 @@ users to reduce attack surface, and simplify verifying authorization:
 As a KMS for the cosigner, the user can sign `did:key:zCosigning` with PK_A,
 (results in 96 byte signature, so hash to 256 bits) as an AES encryption key for PK_B which the user must send to the cosigner service; and the cosigner service must not persist or cache.
 
-To prove to the server possession of claimed keys, the initiation starts with
-a challenge
 
 ```
-POST /api/1.0/blskeypair/requestChallenge
+POST /api/1.0/blskeypair/
 HOST: runfission.com
 Content-Type:application/json
 Accept:application/json
 authorization:"Bearer ${JWT UCAN}"
 
 {
-  keypair: {
-    rootDid:
-  },
+  "policy": {
+    "type": "dnslink",
+    "param": "alice.fission.name"
+  }
+}
+```
+where policy can be used by a service to decide how/to whom it would render service. As an example, for the Fission ecosystem, the service would accept requests from the user if the `rootDid` from the UCAN matches the DNS record of the username provided in the policy.
+Other policies are possible, for example accepting payments in cryptotokens for services rendered.
+
+The authorization must have an encoded bearer JWT token
+
+```
+{
+  "alg": "RS256", // (or "EdDSA")
+  "typ": "JWT",
+  "ucv": "0.5.0", // webnative has 'uav: 1.0.0', raise issue?
+}
+
+{
+  "aud": audience,
+  "iss": issuer,
+
+  "exp": exp,
+  "nbf": nbf,
+
+  prf: proof,
+  ptc: potency,
+  "rsc": {"bls": },
+  fct: facts,
 }
 ```
 
